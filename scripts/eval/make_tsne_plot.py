@@ -206,7 +206,7 @@ def plot_2d_embedding_density(truth, preds, labels, bins, fname_base, ext):
     ax.imshow(
         np.transpose(color_hist, (1, 0, 2)),
         interpolation = 'nearest',
-        origin        = 'low',
+        origin        = 'lower',
         extent        = [xbins[0], xbins[-1], ybins[0], ybins[-1]]
     )
 
