@@ -35,7 +35,7 @@ def add_data_mods_parser(parser):
         '--balance',
         default = None,
         help    = (
-            'List of pairs of (pdg,iscc) that should be balanced',
+            'List of pairs of (pdg,iscc) that should be balanced'
             ' NOTE: -pdg and pdg treated as abs(pdg)'
         ),
         nargs   = '*',
