@@ -3,6 +3,7 @@
 import argparse
 import os
 import sklearn.manifold
+import sklearn.preprocessing
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -95,13 +96,20 @@ def plot_2d_embedding_scatter(truth, preds, labels, fname_base, ext):
     add_nice_legend(ax)
     save_fig(f, fname_base + "_scatter", ext)
 
-def normalize_alpha_channel(hist2d_rgba, cmin, cmax):
-    """Normalize alpha channel of 2D array of RGBA colors."""
-    null_mask = (hist2d_rgba[...,3] == 0)
+def normalize_alpha_channel(hist2d_rgba):
+    """Event out alpha channel of 2D array of RGBA colors."""
 
-    hist2d_rgba[...,3] = hist2d_rgba[...,3] / np.max(hist2d_rgba[...,3])
-    hist2d_rgba[...,3] = cmin + (cmax - cmin) * hist2d_rgba[...,3]
-    hist2d_rgba[...,3][null_mask] = 0
+    brightness = hist2d_rgba[...,3].reshape(
+        (hist2d_rgba.shape[0] * hist2d_rgba.shape[1], 1)
+    )
+
+    brightness[brightness == 0]      = np.nan
+    brightness = sklearn.preprocessing.quantile_transform(brightness)
+    brightness[np.isnan(brightness)] = 0
+
+    hist2d_rgba[...,3] = brightness.reshape(
+        (hist2d_rgba.shape[0], hist2d_rgba.shape[1])
+    )
 
 def mix_density_hists(hists):
     """Mix 2D arrays of RGBA colors.
@@ -132,7 +140,7 @@ def mix_density_hists(hists):
     result[...,3] = 1 - result[...,3]
 
     # make colors more bright
-    normalize_alpha_channel(result, 0.5, 1)
+    normalize_alpha_channel(result)
 
     return result
 
