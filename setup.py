@@ -19,7 +19,9 @@ setuptools.setup(
     install_requires = [ 'lstm_ee', ],
     license          = 'MIT',
     long_description = readme(),
-    packages         = setuptools.find_packages(),
+    packages         = setuptools.find_packages(
+        exclude = [ 'tests', 'tests.*' ]
+    ),
     url              = 'https://github.com/usert5432/slice_lid',
 )
 
